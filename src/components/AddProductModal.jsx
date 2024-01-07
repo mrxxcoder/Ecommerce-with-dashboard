@@ -21,11 +21,13 @@ function AddProductModal({
   onChangeAddProductHandler,
   onChangeThumbnailHandler,
   onSubmitAddHandler,
+  isLoading,
 }) {
   return (
     <CustomModal
       isOpen={isModalOpen}
       onClose={onModalClose}
+      isLoading={isLoading}
       title="Add Product"
       onOkClick={onSubmitAddHandler}
     >

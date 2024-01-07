@@ -1,5 +1,6 @@
 import TableSkeleton from "./TableSkeleton";
 import {
+  useAddDashboardProductMutation,
   useDeleteDashboardProductMutation,
   useGetDashboardProductsQuery,
   useUpdateDashboardProductMutation,
@@ -37,14 +38,20 @@ function DashboardProductsTable() {
   };
 
   const [product, setProduct] = useState(initialProduct);
+
   const [clickedProductId, setClickedProductId] = useState(null);
   const [productToEdit, setProductToEdit] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
-    isOpen: isModalOpen,
-    onOpen: onModalOpen,
-    onClose: onModalClose,
+    isOpen: isModalEditOpen,
+    onOpen: onModalEditOpen,
+    onClose: onModalEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: isModalAddOpen,
+    onOpen: onModalAddOpen,
+    onClose: onModalAddClose,
   } = useDisclosure();
   const { isLoading, data } = useGetDashboardProductsQuery({ page: 1 });
 
@@ -55,6 +62,9 @@ function DashboardProductsTable() {
     updateProduct,
     { isLoading: isUpdating, isSuccess: isUpdatingSuccess },
   ] = useUpdateDashboardProductMutation();
+
+  const [addProduct, { isLoading: isAdding, isSuccess: isAddingSuccess }] =
+    useAddDashboardProductMutation();
 
   function onChangeHandler(e) {
     const { name, value } = e.target;
@@ -71,6 +81,8 @@ function DashboardProductsTable() {
       [name]: value,
     });
   }
+
+  console.log(product);
 
   function onChangePriceAddHandler(value) {
     setProduct({
@@ -106,8 +118,20 @@ function DashboardProductsTable() {
   }
 
   function onSubmitAddHandler() {
-    console.log(product);
+    const formData = new FormData();
+    formData.append(
+      "data",
+      JSON.stringify({
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+      })
+    );
+    formData.append("files.thumbnail", thumbnail);
+    addProduct(formData);
   }
+  console.log(thumbnail);
 
   useEffect(
     function () {
@@ -117,10 +141,10 @@ function DashboardProductsTable() {
       }
       if (isUpdatingSuccess) {
         setClickedProductId(null);
-        onModalClose();
+        onModalEditClose();
       }
     },
-    [isSuccess, isUpdatingSuccess, onClose, onModalClose]
+    [isSuccess, isUpdatingSuccess, onClose, onModalEditClose]
   );
 
   if (isLoading) {
@@ -136,7 +160,7 @@ function DashboardProductsTable() {
           ml="auto"
           onClick={() => {
             setProduct();
-            onModalOpen();
+            onModalAddOpen();
           }}
         >
           Add Product
@@ -209,7 +233,7 @@ function DashboardProductsTable() {
                       onClick={() => {
                         setClickedProductId(product.id);
                         setProductToEdit(product.attributes);
-                        onModalOpen();
+                        onModalEditOpen();
                       }}
                     >
                       <FiEdit2 size={17} />
@@ -233,9 +257,10 @@ function DashboardProductsTable() {
           deleteProduct(clickedProductId);
         }}
       />
-      {/* <AddProductModal
-        isModalOpen={isModalOpen}
-        onModalClose={onModalClose}
+      <AddProductModal
+        isModalOpen={isModalAddOpen}
+        onModalClose={onModalAddClose}
+        isLoading={isAdding}
         product={product}
         setProduct={setProduct}
         onChangePriceAddHandler={onChangePriceAddHandler}
@@ -243,11 +268,11 @@ function DashboardProductsTable() {
         onChangeAddProductHandler={onChangeAddProductHandler}
         onChangeThumbnailHandler={onChangeThumbnailHandler}
         onSubmitAddHandler={onSubmitAddHandler}
-      /> */}
+      />
 
       <UpdateProductModal
-        isModalOpen={isModalOpen}
-        onModalClose={onModalClose}
+        isModalOpen={isModalEditOpen}
+        onModalClose={onModalEditClose}
         isUpdating={isUpdating}
         productToEdit={productToEdit}
         setProductToEdit={setProductToEdit}
