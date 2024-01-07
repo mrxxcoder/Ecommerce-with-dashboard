@@ -18,6 +18,8 @@ export default function CustomAlertDialog({
   description,
   cancelText = "Cancel",
   okText = "Ok",
+  isLoading,
+  onOkHandler,
 }) {
   const cancelRef = useRef();
 
@@ -41,7 +43,12 @@ export default function CustomAlertDialog({
             <Button ref={cancelRef} onClick={onClose}>
               {cancelText}
             </Button>
-            <Button colorScheme="red" ml={3}>
+            <Button
+              colorScheme="red"
+              ml={3}
+              onClick={onOkHandler}
+              isLoading={isLoading}
+            >
               {okText}
             </Button>
           </AlertDialogFooter>
