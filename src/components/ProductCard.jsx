@@ -18,9 +18,7 @@ function ProductCard({ id, attributes }) {
     <Card bg={"none"} border={"1px solid#a8b5c8"}>
       <CardBody>
         <Image
-          src={`${import.meta.env.VITE_SERVER_URL}${
-            attributes?.thumbnail?.data?.attributes?.url
-          }`}
+          src={attributes?.thumbnail?.data?.attributes?.url}
           alt="Green double couch with wooden legs"
           boxSize={"200px"}
           borderRadius={"full"}

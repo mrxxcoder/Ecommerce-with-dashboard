@@ -26,7 +26,7 @@ import { selectCart } from "../app/features/cartSlice";
 import CartDrawer from "../components/CartDrawer";
 import { onOpenCartDrawerAction } from "../app/features/globalSlice";
 
-const Links = ["Products"];
+const Links = ["Products", "Dashboard"];
 
 const NavLink = ({ children }) => {
   return (

@@ -27,6 +27,8 @@ import CustomAlertDialog from "../../shared/AlertDialog";
 import { useEffect, useState } from "react";
 import UpdateProductModal from "../../components/UpdateProductModal";
 import AddProductModal from "../../components/AddProductModal";
+import { useSelector } from "react-redux";
+import { selectNetwork } from "../../app/features/networkSlice";
 
 function DashboardProductsTable() {
   const initialProduct = {
@@ -39,6 +41,8 @@ function DashboardProductsTable() {
 
   const [product, setProduct] = useState(initialProduct);
 
+  const { isOnline } = useSelector(selectNetwork);
+  console.log(isOnline);
   const [clickedProductId, setClickedProductId] = useState(null);
   const [productToEdit, setProductToEdit] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
@@ -147,7 +151,7 @@ function DashboardProductsTable() {
     [isSuccess, isUpdatingSuccess, onClose, onModalEditClose]
   );
 
-  if (isLoading) {
+  if (isLoading || !isOnline) {
     return <TableSkeleton />;
   }
 
@@ -190,10 +194,10 @@ function DashboardProductsTable() {
                       borderRadius="full"
                       objectFit={"cover"}
                       boxSize="40px"
-                      src={`${import.meta.env.VITE_SERVER_URL}${
+                      src={
                         product?.attributes?.thumbnail?.data?.attributes
                           ?.formats?.thumbnail?.url
-                      }`}
+                      }
                       alt={product?.attributes?.title}
                     />
                   </Td>
