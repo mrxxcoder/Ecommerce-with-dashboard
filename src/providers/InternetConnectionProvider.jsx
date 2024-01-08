@@ -27,7 +27,6 @@ const InternetConnectionProvider = ({ children }) => {
     dispatch(networkMode(true));
     close();
   };
-
   const setOffline = () => {
     dispatch(networkMode(false));
     addToast();
