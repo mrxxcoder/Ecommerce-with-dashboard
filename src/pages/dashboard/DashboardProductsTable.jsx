@@ -42,7 +42,7 @@ function DashboardProductsTable() {
   const [product, setProduct] = useState(initialProduct);
 
   const { isOnline } = useSelector(selectNetwork);
-  console.log(isOnline);
+
   const [clickedProductId, setClickedProductId] = useState(null);
   const [productToEdit, setProductToEdit] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
@@ -85,8 +85,6 @@ function DashboardProductsTable() {
       [name]: value,
     });
   }
-
-  console.log(product);
 
   function onChangePriceAddHandler(value) {
     setProduct({
@@ -135,7 +133,6 @@ function DashboardProductsTable() {
     formData.append("files.thumbnail", thumbnail);
     addProduct(formData);
   }
-  console.log(thumbnail);
 
   useEffect(
     function () {

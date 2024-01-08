@@ -12,19 +12,22 @@ import DashboardProducts from "./pages/dashboard/DashboardProducts";
 
 function App() {
   const token = CookieService.get("jwt");
-  console.log(token);
+
   return (
     <>
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          <Route index element={<HomePage />} />
+          <Route index element={<ProductsPage />} />
           <Route path="products" element={<ProductsPage />} />
           <Route path="products/:id" element={<ProductPage />} />
           <Route path="about" element={<AboutPage />} />
         </Route>
 
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<AdminDashboard />} />
+        <Route
+          path="/dashboard"
+          element={<DashboardLayout isAuthenticated={token} />}
+        >
+          <Route index element={<DashboardProducts />} />
           <Route path="products" element={<DashboardProducts />} />
           <Route path="categories" element={<h1>Categories</h1>} />
         </Route>

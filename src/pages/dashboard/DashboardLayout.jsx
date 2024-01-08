@@ -17,15 +17,19 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  useColorMode,
+  Button,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Navigate, Link as RouterLink } from "react-router-dom";
 import { FiHome, FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 import { BsGrid3X3 } from "react-icons/bs";
 import { HiOutlineViewColumns } from "react-icons/hi2";
 import { Outlet } from "react-router-dom";
+import { IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import CookieService from "../../services/CookieService";
 
 const LinkItems = [
-  { to: "/dashboard", name: "Dashboard", icon: FiHome },
+  { to: "/", name: "Home", icon: FiHome },
   { to: "/dashboard/products", name: "Products", icon: HiOutlineViewColumns },
   { to: "/dashboard/categories", name: "Categories", icon: BsGrid3X3 },
 ];
@@ -95,6 +99,13 @@ const NavItem = ({ icon, children, to, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  function logoutHandler() {
+    CookieService.remove("jwt");
+    window.location.reload();
+  }
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -131,6 +142,9 @@ const MobileNav = ({ onOpen, ...rest }) => {
           aria-label="open menu"
           icon={<FiBell />}
         />
+        <Button onClick={toggleColorMode}>
+          {colorMode === "light" ? <IoMoonOutline /> : <IoSunnyOutline />}
+        </Button>
         <Flex alignItems={"center"}>
           <Menu>
             <MenuButton
@@ -169,7 +183,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
+              <MenuItem onClick={logoutHandler}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -178,11 +192,15 @@ const MobileNav = ({ onOpen, ...rest }) => {
   );
 };
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ isAuthenticated }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh">
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
